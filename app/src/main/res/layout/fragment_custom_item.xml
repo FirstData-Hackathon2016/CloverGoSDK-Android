@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="fragments.CustomItemFragment">
+
+    <TextView
+        android:id="@+id/customAmountTestView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:gravity="center"
+        android:text="@string/custom_item"
+        android:textSize="27sp"/>
+
+    <TextView
+        android:id="@+id/customAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginBottom="95dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="120dp"
+        android:gravity="center_vertical"
+        android:text="@string/custom_amount_type"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/customEditTxt"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="120dp"
+        android:layout_toRightOf="@+id/customAmount"
+        android:hint="$0.00"
+        android:inputType="numberDecimal"
+        android:maxLength="11"
+        android:numeric="integer"/>
+
+    <Spinner
+        android:id="@+id/customSpinner"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="226dp"
+        android:layout_toEndOf="@+id/loadTaxBtn"
+        android:layout_toRightOf="@+id/loadTaxBtn">
+    </Spinner>
+
+    <Button
+        android:id="@+id/loadTaxBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="230dp"
+        android:text="Load Tax"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/cardReaderTransactionBtn"
+        android:layout_width="170dp"
+        android:layout_height="58dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/custom_next"
+        android:visibility="visible"/>
+
+    <Button
+        android:id="@+id/manualTransactionBtn"
+        android:layout_width="170dp"
+        android:layout_height="58dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/cardReaderTransactionBtn"
+        android:gravity="center"
+        android:text="@string/manual_transaction"
+        android:visibility="visible"/>
+</RelativeLayout>

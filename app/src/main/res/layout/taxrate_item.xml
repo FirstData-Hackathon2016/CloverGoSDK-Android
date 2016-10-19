@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/taxRateStateName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="40dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:paddingLeft="15dp"
+        android:text="NJ Tax"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/taxRatePercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/taxRateStateName"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="10dp"
+        android:text="$7.20000000"
+        android:textSize="16sp"/>
+</RelativeLayout>

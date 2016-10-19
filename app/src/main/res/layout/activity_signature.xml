@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="com.firstdata.clovergo.SignatureActivity">
+
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/done_button_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/signature_done"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/signature_sign_approve"
+        android:textColor="#4A4A4A"
+        android:textSize="16dp"/>
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/signaturePad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/done_button_id"
+        android:layout_below="@id/textHere"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:eventsInterceptionEnabled="true"
+        android:fadeEnabled="false"
+        android:fadeOffset="2000"
+        android:gestureColor="#151515"
+        android:gestureStrokeLengthThreshold="0.1"
+        android:gestureStrokeType="multiple"
+        android:gestureStrokeWidth="7"
+        android:orientation="horizontal"/>
+</RelativeLayout>

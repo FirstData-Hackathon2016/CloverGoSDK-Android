@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/message"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp">
+
+        <TextView
+            android:id="@+id/AmountLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="75dp"
+            android:gravity="center_vertical"
+            android:text="Total Amount:"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/amountEditTxt"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="13dp"
+            android:layout_toRightOf="@+id/AmountLbl"
+            android:paddingLeft="5dp"
+            android:text="20"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/subTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="40dp"
+            android:text="Subtotal: "/>
+
+        <TextView
+            android:id="@+id/transactionSubTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="40dp"
+            android:text="$20.00"/>
+
+        <TextView
+            android:id="@+id/taxText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_toRightOf="@+id/transactionSubTotal"
+            android:text=" + Tax: "/>
+
+        <TextView
+            android:id="@+id/taxTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_toRightOf="@+id/taxText"
+            android:text="$0.00"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/transaction_card_reader"
+            android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/payBttn"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:text="Pay"
+        android:textStyle="bold"
+        android:visibility="visible"/>
+</RelativeLayout>

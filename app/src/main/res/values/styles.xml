@@ -1,0 +1,13 @@
+<resources>
+
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"/>
+
+    <style name="myDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+</resources>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Clover Go SDK Sample</string>
+    <string name="message">This is sample app to demonstrate use of card reader to process transaction. Please connect Clover Go reader to headphone
+    jack to process swipe/dip transaction using reader</string>
+    <string name="tax_percentage">(%1$s)</string>
+    <string name="transaction_card_reader">If pay button is not enabled please unplug your CardReader and Plug it Again.</string>
+    <string name="inventory_itemQuantity">x %1$s</string>
+    <string name="custom_item">Custom Item</string>
+    <string name="custom_amount_type">Amount in $:</string>
+    <string name="custom_next">Card Reader Transaction</string>
+    <string name="manual_transaction">Manual Transaction</string>
+    <string name="inventory_text">ALL ITEMS</string>
+    <string name="main_activity_text">Clover Go Sample Application</string>
+    <string name="inventory_main_text">Inventory Item Transaction</string>
+    <string name="custom_item_text">Custom Item Transaction</string>
+    <string name="send_receipt_text">Send receipt to a mobile number or email address</string>
+    <string name="send_receipt_send">Send Receipt</string>
+    <string name="no_receipt">No Receipt</string>
+    <string name="signature_done">Signature Done</string>
+    <string name="signature_sign_approve">Sign to approve payment</string>
+</resources>

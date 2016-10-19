@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="Manual Transaction"
+        android:textSize="27sp"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="110dp">
+
+        <TextView
+            android:id="@+id/AmountLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="75dp"
+            android:gravity="center_vertical"
+            android:text="Total Amount:"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/amountEditTxt"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="13dp"
+            android:layout_toRightOf="@+id/AmountLbl"
+            android:paddingLeft="5dp"
+            android:text="20"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/subTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="40dp"
+            android:text="Subtotal: "/>
+
+        <TextView
+            android:id="@+id/transactionSubTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="40dp"
+            android:text="$20.00"/>
+
+        <TextView
+            android:id="@+id/taxText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_toRightOf="@+id/transactionSubTotal"
+            android:text=" + Tax: "/>
+
+        <TextView
+            android:id="@+id/taxTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_toRightOf="@+id/taxText"
+            android:text="$0.00"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/cardNumberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
+        android:text="Card Number"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/expirationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:text="Expiration"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/cvvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:text="Cvv"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/cardNumberEditText"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="225dp"
+        android:layout_toRightOf="@id/cardNumberText"
+        android:inputType="numberDecimal"
+        android:maxLength="16"
+        android:numeric="integer"/>
+
+    <EditText
+        android:id="@+id/expirationEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="265dp"
+        android:layout_toRightOf="@id/expirationText"
+        android:hint="MM/YY"
+        android:maxLength="5"/>
+
+    <EditText
+        android:id="@+id/cvvEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="305dp"
+        android:layout_toRightOf="@id/cvvText"
+        android:inputType="numberDecimal"
+        android:maxLength="3"
+        android:numeric="integer"/>
+
+    <Button
+        android:id="@+id/get450ReadersBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/manualPayBtn"
+        android:text="Get 450 Readers"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/manualPayBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Pay"
+        android:textStyle="bold"/>
+</RelativeLayout>
