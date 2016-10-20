@@ -124,14 +124,6 @@
         android:numeric="integer"/>
 
     <Button
-        android:id="@+id/get450ReadersBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/manualPayBtn"
-        android:text="Get 450 Readers"
-        android:textStyle="bold"/>
-
-    <Button
         android:id="@+id/manualPayBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

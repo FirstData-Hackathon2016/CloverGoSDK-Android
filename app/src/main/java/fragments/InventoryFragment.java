@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.firstdata.clovergo.MainActivity;
 import com.firstdata.clovergo.R;
 import com.firstdata.clovergo.client.callback.InventoryCallBack;
-import com.firstdata.clovergo.client.internal.model.CloverGoInventoryRequest;
 import com.firstdata.clovergo.client.internal.util.AmountUtil;
 import com.firstdata.clovergo.client.model.ErrorResponse;
 import com.firstdata.clovergo.client.model.Inventory;
@@ -38,7 +36,7 @@ import domain.SampleCloverConstants;
 
 public class InventoryFragment extends Fragment implements InventoryCallBack {
 
-    private Button cardReaderTransaction, manualTransaction, saveOrder;
+    private Button cardReaderTransaction, manualTransaction;
     private ProgressDialog progressDialog;
     private ListView listView;
     private List<Inventory> inventoryList;
@@ -58,15 +56,7 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
 
         getActivity().getActionBar().setTitle("Inventory Item");
 
-        final String deviceId = mCloverGo.getDeviceId();
-        final String employeeId = mCloverGo.getEmployeeId();
-        final String merchantId = mCloverGo.getMerchantId();
-        mCloverGo.setInventoryCallBack(InventoryFragment.this);
-        CloverGoInventoryRequest inventoryRequest = new CloverGoInventoryRequest();
-        inventoryRequest.setDeviceId(deviceId);
-        inventoryRequest.setMerchantId(merchantId);
-        inventoryRequest.setEmployeeId(employeeId);
-        mCloverGo.loadInventory();
+        mCloverGo.loadInventory(InventoryFragment.this);
 
         if (mOrderUnsavedItems == null)
             mOrderUnsavedItems = new ArrayList<>();
@@ -75,15 +65,6 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
         cardReaderTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double amount = 0;
-                double taxAmount = 0;
-                HashMap<Double, BigDecimal> taxGroup = new HashMap<>();
-                for (OrderItem orderItem : mOrderUnsavedItems) {
-
-                    amount += orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getUnitQuantity())).doubleValue();
-                    AmountUtil.addTaxRateToHashMap(taxGroup, orderItem);
-                }
-                taxAmount = AmountUtil.getTotalTaxFromHashMap(taxGroup);
                 if (mOrderUnsavedItems.size() > 0) {
                     Fragment fragment = new TransactionFragment();
                     Bundle bundle = new Bundle();
@@ -98,15 +79,6 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
         manualTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double amount = 0;
-                double taxAmount = 0;
-                HashMap<Double, BigDecimal> taxGroup = new HashMap<>();
-                for (OrderItem orderItem : mOrderUnsavedItems) {
-
-                    amount += orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getUnitQuantity())).doubleValue();
-                    AmountUtil.addTaxRateToHashMap(taxGroup, orderItem);
-                }
-                taxAmount = AmountUtil.getTotalTaxFromHashMap(taxGroup);
                 if (mOrderUnsavedItems.size() > 0) {
                     Fragment fragment = new ManualTransactionFragment();
                     Bundle bundle = new Bundle();
@@ -126,33 +98,10 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
 
                 OrderItem orderItem = addItemToOrder(inventory, 1);
                 TextView quantityTxtVw = (TextView) view.findViewById(R.id.inventoryItemQuantity);
-                quantityTxtVw.setText(String.format(getResources().getString(R.string.inventory_itemQuantity), orderItem.getUnitQuantity()));
+                quantityTxtVw.setText(String.format(getResources().getString(R.string.inventory_itemQuantity), String.valueOf(orderItem.getUnitQuantity())));
                 inventoryAdapter.notifyDataSetChanged();
             }
         });
-
-        /*saveOrder = (Button)view.findViewById(R.id.inventorySaveOrder);
-        saveOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOrderUnsavedItems.size() > 0) {
-                    mCloverGo.saveOpenOrder(mOrderUnsavedItems);
-                    Toast.makeText(getActivity(), "Order Saved", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        mCloverGo.setOpenOrderCallBack(new OpenOrderCallBack() {
-            @Override
-            public void onSuccess(CloverGoOpenOrderResponse cloverGoOpenOrderResponse) {
-                Toast.makeText(getActivity(), "Order Saved", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(ErrorResponse errorResponse) {
-                Toast.makeText(getActivity(), "Order Unsaved", Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         return view;
     }
@@ -260,7 +209,7 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
             for (OrderItem item : mOrderUnsavedItems) {
                 if (item.getInventoryId().equals(getItem(position).getInventoryId())) {
                     quantity = item.getUnitQuantity();
-                    itemQuantityTextView.setText(String.format(getResources().getString(R.string.inventory_itemQuantity), quantity));
+                    itemQuantityTextView.setText(String.format(getResources().getString(R.string.inventory_itemQuantity), String.valueOf(quantity)));
                     break;
                 }
             }
@@ -277,7 +226,6 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
             inventoryAdapter = new InventoryAdaptor(getActivity(), inventoryList);
             listView.setAdapter(inventoryAdapter);
         }
-        Log.d("TAG", "response" + inventoryResponse);
         progressDialog.dismiss();
     }
 
@@ -285,6 +233,4 @@ public class InventoryFragment extends Fragment implements InventoryCallBack {
     public void onFailure(ErrorResponse errorResponse) {
         progressDialog.dismiss();
     }
-
-
 }

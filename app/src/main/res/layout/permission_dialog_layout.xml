@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <Button
+        android:id="@+id/permissionAudioBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Audio Permission"/>
+
+    <Button
+        android:id="@+id/permissionLocationBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Location Permission"/>
+
+    <Button
+        android:id="@+id/turnOnLocationBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Turn On GPS"/>
+
+    <Button
+        android:id="@+id/turnOnLBluetoothBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Turn On Bluetooth"/>
+
+    <Button
+        android:id="@+id/permissionDoneBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Done"/>
+
+</LinearLayout>

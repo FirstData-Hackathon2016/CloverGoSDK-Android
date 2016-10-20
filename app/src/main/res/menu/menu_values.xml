@@ -5,4 +5,19 @@
         android:enabled="true"
         android:showAsAction="never"
         android:title="Version"/>
+    <item
+        android:id="@+id/permission"
+        android:enabled="true"
+        android:showAsAction="never"
+        android:title="Enable Permissions"/>
+    <item
+        android:id="@+id/gps"
+        android:enabled="true"
+        android:showAsAction="never"
+        android:title="Turn On GPS"/>
+    <item
+        android:id="@+id/bluetooth"
+        android:enabled="true"
+        android:showAsAction="never"
+        android:title="Turn On Bluetooth"/>
 </menu>

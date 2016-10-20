@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.firstdata.clovergo.MainActivity;
 import com.firstdata.clovergo.R;
 import com.firstdata.clovergo.client.callback.TaxRateCallBack;
-import com.firstdata.clovergo.client.internal.model.CloverGoTaxRateRequest;
 import com.firstdata.clovergo.client.internal.util.AmountUtil;
 import com.firstdata.clovergo.client.model.ErrorResponse;
 import com.firstdata.clovergo.client.model.OrderItem;
@@ -68,12 +67,6 @@ public class CustomItemFragment extends Fragment implements TaxRateCallBack {
         loadTax = (Button) view.findViewById(R.id.loadTaxBtn);
 
         mCloverGo = MainActivity.getCloverGo();
-        mCloverGo.setTaxRateCallback(CustomItemFragment.this);
-
-        CloverGoTaxRateRequest taxRateRequest = new CloverGoTaxRateRequest();
-        taxRateRequest.setDeviceID(mCloverGo.getDeviceId());
-        taxRateRequest.setMerchantId(mCloverGo.getMerchantId());
-        taxRateRequest.setEmployeeId(mCloverGo.getEmployeeId());
 
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -147,7 +140,7 @@ public class CustomItemFragment extends Fragment implements TaxRateCallBack {
                 progressDialog.setMessage("Loading Tax Rates....");
                 progressDialog.show();
 
-                mCloverGo.loadTaxes();
+                mCloverGo.loadTaxes(CustomItemFragment.this);
             }
         });
 

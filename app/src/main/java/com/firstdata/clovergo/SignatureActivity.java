@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.firstdata.clovergo.client.callback.SignatureCaptureCallback;
-import com.firstdata.clovergo.client.internal.model.CloverGoSignatureRequest;
 import com.firstdata.clovergo.client.model.ErrorResponse;
 import com.firstdata.clovergo.client.model.SignatureResponse;
 import com.firstdata.clovergo.client.util.CloverGo;
@@ -81,18 +80,10 @@ public class SignatureActivity extends FragmentActivity implements SignatureCapt
             orderId = bundle.getString(SampleCloverConstants.BUNDLE_MAPPING.ORDER_ID.name());
         }
 
-        final String deviceId = cloverGo.getDeviceId();
-        final String merchantId = cloverGo.getMerchantId();
-        final String employeeId = cloverGo.getEmployeeId();
-
         signatureDoneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (gestureOverlayView.getGesture() != null) {
-                    CloverGoSignatureRequest signatureRequest = new CloverGoSignatureRequest();
-                    ArrayList<CloverGoSignatureRequest.Strokes> strokesList = new ArrayList<>();
-                    CloverGoSignatureRequest.Strokes strokes;
-
                     List<int[][]> list = new ArrayList();
                     int[][] xy;
                     int gestureCount = gestureOverlayView.getGesture().getStrokesCount();
@@ -101,10 +92,8 @@ public class SignatureActivity extends FragmentActivity implements SignatureCapt
 
                     for (int i = 0; i < gestureCount; i++) {
                         points = gestureOverlayView.getGesture().getStrokes().get(i).points;
-                        strokes = signatureRequest.new Strokes();
                         count = 0;
                         xy = new int[points.length / 2][2];
-                        CloverGoSignatureRequest.Points point = signatureRequest.new Points();
 
                         for (int j = 0; j < points.length; j += 2) {
                             xy[count][0] = (int) points[j];
@@ -113,27 +102,16 @@ public class SignatureActivity extends FragmentActivity implements SignatureCapt
                         }
 
                         list.add(xy);
-                        point.setPoints(xy);
-                        strokes.setPoints(point);
-                        strokesList.add(strokes);
                     }
-                    signatureRequest.setStrokes(strokesList);
 
                     progressDialog.setTitle("Processing Signature");
                     progressDialog.setMessage("Please wait....");
 
-                    cloverGo.setSignatureCaptureCallback(SignatureActivity.this);
                     String transactionId = "";
-                    if (bundle != null) {
+                    if (bundle != null)
                         transactionId = bundle.getString(SampleCloverConstants.BUNDLE_MAPPING.TRANSACTION_ID.name());
-                    }
 
-                    signatureRequest.setTransactionId(transactionId);
-                    signatureRequest.setDeviceId(deviceId);
-                    signatureRequest.setMerchantId(merchantId);
-                    signatureRequest.setEmployeeId(employeeId);
-
-                    cloverGo.captureSignature(transactionId, list);
+                    cloverGo.captureSignature(transactionId, list, SignatureActivity.this);
                     progressDialog.show();
                 }
             }

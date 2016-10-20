@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.firstdata.clovergo.MainActivity;
 import com.firstdata.clovergo.R;
 import com.firstdata.clovergo.client.callback.SendReceiptCallBack;
-import com.firstdata.clovergo.client.internal.model.CloverGoSendReceiptRequest;
 import com.firstdata.clovergo.client.model.ErrorResponse;
 import com.firstdata.clovergo.client.model.ReceiptResponse;
 import com.firstdata.clovergo.client.util.CloverGo;
@@ -65,25 +63,13 @@ public class SendReceiptFragment extends Fragment implements SendReceiptCallBack
             @Override
             public void onClick(View v) {
                 final CloverGo mCloverGo = MainActivity.getCloverGo();
-                final String deviceId = mCloverGo.getDeviceId();
-                final String merchantId = mCloverGo.getMerchantId();
-                final String employeeId = mCloverGo.getEmployeeId();
-
-                mCloverGo.setSendReceiptCallback(SendReceiptFragment.this);
 
                 String phoneNumber = mPhoneEditText.getText().toString().replaceAll("\\D", "");
                 String email = mEmailEditText.getText().toString();
 
                 progressDialog.dismiss();
                 if (Validator.validateEmailInput(email) || Validator.validatePhoneNumberInput(phoneNumber)) {
-                    CloverGoSendReceiptRequest sendReceiptRequest = new CloverGoSendReceiptRequest();
-                    sendReceiptRequest.setDeviceId(deviceId);
-                    sendReceiptRequest.setMerchantId(merchantId);
-                    sendReceiptRequest.setEmployeeId(employeeId);
-                    sendReceiptRequest.setOrderId(orderId);
-                    sendReceiptRequest.setPhoneNumber(phoneNumber);
-                    sendReceiptRequest.setEmail(email);
-                    mCloverGo.sendReceipt(orderId, phoneNumber, email);
+                    mCloverGo.sendReceipt(orderId, phoneNumber, email, SendReceiptFragment.this);
                     progressDialog.setMessage("Sending Receipt.....");
                     progressDialog.show();
                 } else {
@@ -116,12 +102,7 @@ public class SendReceiptFragment extends Fragment implements SendReceiptCallBack
 
     @Override
     public void onSuccess(ReceiptResponse receiptResponse) {
-        Log.i("TAG", receiptResponse.toString());
         progressDialog.dismiss();
-        //this is just for testing, whether the beacon service is working or not, actual end user will call this method
-        // to get receipt url, by providing order id
-        String receiptUrl = MainActivity.getCloverGo().getReceiptUrl(orderId);
-        Log.d("TAG", "receiptUrl" + receiptUrl);
         alertDialog.setMessage("Receipt Sent");
         alertDialog.setTitle("Send Receipt Status");
         alertDialog.show();

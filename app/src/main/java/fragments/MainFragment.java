@@ -2,7 +2,9 @@ package fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.firstdata.clovergo.MainActivity;
 import com.firstdata.clovergo.R;
@@ -72,8 +75,21 @@ public class MainFragment extends Fragment {
                 alertDialog.setMessage(stringBuilder.toString());
                 alertDialog.setTitle("SDK Version");
                 alertDialog.show();
+                break;
+            case R.id.permission:
+                ((MainActivity) getActivity()).requestPermissions();
+                break;
+            case R.id.gps:
+                if (!((MainActivity) getActivity()).isLocationEnabled()) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                } else
+                    Toast.makeText(getActivity(), "GPS already turned on", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bluetooth:
+                ((MainActivity) getActivity()).turnOnBluetooth();
+                break;
         }
         return true;
     }
-
 }

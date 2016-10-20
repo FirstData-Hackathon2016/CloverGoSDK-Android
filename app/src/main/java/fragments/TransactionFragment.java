@@ -1,7 +1,9 @@
 package fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,13 +52,22 @@ import domain.SampleCloverConstants;
 public class TransactionFragment extends Fragment implements CardReaderCallBack, TransactionCallBack {
 
     private TextView mAmountTxt, mSubtotalAmount, mTaxRateAmount;
-    private Button mPayBttn;
+    private Button mPayBtn;
     private TransactionRequest transactionRequest;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog, resetProgressDialog;
     private boolean readerReady;
-    private CardReaderInfo cardReaderInfo;
+    private CardReaderInfo mCardReaderInfo;
     private CloverGo mCloverGo;
+
+    private ArrayList<CardReaderInfo> mDetectedBTReadersList;
+    private ArrayList<String> mDetectedBTReadersStringsList;
+    private ArrayAdapter<String> mDetectedReadersArrayAdapter;
+
+    private ListView mDetectedBTReadersListVw;
+    private Dialog mChoiceDialog;
+    private Button mGet450Btn;
+    private String btMac, btName;
 
     @Nullable
     @Override
@@ -64,11 +77,22 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
         mCloverGo = MainActivity.getCloverGo();
         getActivity().getActionBar().setTitle("Card Reader Transaction");
 
+        mDetectedBTReadersList = new ArrayList<>();
+        mDetectedBTReadersStringsList = new ArrayList<>();
+
         mAmountTxt = (TextView) view.findViewById(R.id.amountEditTxt);
         mSubtotalAmount = (TextView) view.findViewById(R.id.transactionSubTotal);
         mTaxRateAmount = (TextView) view.findViewById(R.id.taxTotal);
-        mPayBttn = (Button) view.findViewById(R.id.payBttn);
-        mPayBttn.setEnabled(false);
+        mPayBtn = (Button) view.findViewById(R.id.payBttn);
+        mPayBtn.setEnabled(false);
+
+        mGet450Btn = (Button) view.findViewById(R.id.get450ReadersBtn);
+        mGet450Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBluetoothReaders();
+            }
+        });
 
         final Bundle bundle = getArguments();
         final ArrayList<OrderItem> mOrderUnsavedItems = bundle.getParcelableArrayList(SampleCloverConstants.BUNDLE_MAPPING.ORDER_ITEMS.name());
@@ -101,7 +125,7 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
         mTaxRateAmount.setText(AmountUtil.getCurrencyFormattedAmount(taxAmount));
         mAmountTxt.setText(AmountUtil.getCurrencyFormattedAmount(totalAmount));
         mSubtotalAmount.setText(AmountUtil.getCurrencyFormattedAmount(amount));
-        mPayBttn.setOnClickListener(new View.OnClickListener() {
+        mPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 transactionRequest = new TransactionRequest();
@@ -114,7 +138,7 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
                     orderItems.add(customOrderItem);
                     transactionRequest.setOrderItemList(orderItems);
                 }
-                mCloverGo.doReaderTransaction(transactionRequest);
+                mCloverGo.doReaderTransaction(transactionRequest, TransactionFragment.this);
             }
         });
 
@@ -132,9 +156,9 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0)
-                    mPayBttn.setEnabled(readerReady);
+                    mPayBtn.setEnabled(readerReady);
                 else
-                    mPayBttn.setEnabled(false);
+                    mPayBtn.setEnabled(false);
             }
         });
 
@@ -154,6 +178,8 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
     @Override
     public void onStop() {
         super.onStop();
+        mCloverGo.stopBluetoothReaderScan();
+        mCloverGo.release();
         mCloverGo.release();
         progressDialog.dismiss();
         alertDialog.dismiss();
@@ -163,31 +189,31 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
     @Override
     public void onStart() {
         super.onStart();
-        mCloverGo.setTransactionCallBack(this);
-        mCloverGo.setReaderCallBack(this);
-        mCloverGo.init(CloverGoConstants.CARD_READER_TYPE.RP350X);
+        mCloverGo.init(CloverGoConstants.CARD_READER_TYPE.RP450X, TransactionFragment.this);
+        mCloverGo.startBluetoothReaderScan();
     }
 
     @Override
     public void onConnected() {
         Toast.makeText(getActivity(), "Reader Connected, please make sure to Insert your Card", Toast.LENGTH_LONG).show();
-        cardReaderInfo = mCloverGo.getCardReaderInfo();
+        mCardReaderInfo = mCloverGo.getCardReaderInfo();
     }
 
     @Override
-    public void onReady(CardReaderInfo cardReaderInfo) {
+    public void onReady() {
+//        public void onReady(CardReaderInfo mCardReaderInfo) {
         Toast.makeText(getActivity(), "Reader Ready", Toast.LENGTH_SHORT).show();
         readerReady = true;
-        if (cardReaderInfo.isResetRequired()) {
-            progressDialog.setTitle("Resetting Reader");
-            progressDialog.setMessage("Resetting reader please wait");
-            progressDialog.show();
-            mCloverGo.resetReader();
-        }
+//        if (mCardReaderInfo.isResetRequired()) {
+//            progressDialog.setTitle("Resetting Reader");
+//            progressDialog.setMessage("Resetting reader please wait");
+//            progressDialog.show();
+//            mCloverGo.resetReader();
+//        }
         if (mAmountTxt.length() > 0) {
-            mPayBttn.setEnabled(true);
+            mPayBtn.setEnabled(true);
         } else {
-            mPayBttn.setEnabled(false);
+            mPayBtn.setEnabled(false);
         }
         resetReaderMenu.setEnabled(true);
         cardReaderMenu.setEnabled(true);
@@ -198,7 +224,7 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
         Toast.makeText(getActivity(), "Reader Disconnected", Toast.LENGTH_SHORT).show();
         progressDialog.dismiss();
         alertDialog.dismiss();
-        mPayBttn.setEnabled(false);
+        mPayBtn.setEnabled(false);
         readerReady = false;
     }
 
@@ -298,6 +324,37 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
     }
 
     @Override
+    public void onCardReaderDiscovered(CardReaderInfo cardReaderInfo) {
+        boolean isAdded = false;
+        for (CardReaderInfo readerInfo : mDetectedBTReadersList) {
+            if (readerInfo.getBluetoothIdentifier().contentEquals(cardReaderInfo.getBluetoothIdentifier())) {
+                isAdded = true;
+                break;
+            }
+        }
+
+        if (!isAdded) {
+            mDetectedBTReadersList.add(cardReaderInfo);
+            mDetectedBTReadersStringsList.add(cardReaderInfo.getBluetoothName());
+            if (mDetectedReadersArrayAdapter != null)
+                mDetectedReadersArrayAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onPairingFailed() {
+        Toast.makeText(getActivity(), "Pairing Failed", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onPairingSuccess() {
+        mCloverGo.connectToBluetoothReader(mCardReaderInfo);
+        Toast.makeText(getActivity(), "Pairing Succeeded", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
     public boolean proceedOnError(TransactionEvent transactionEvent) {
         return true; // return false to cancel transaction on Address Verification failure or Duplicate transaction, true to proceed with transaction
     }
@@ -378,7 +435,7 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
                 break;
 
             case R.id.cardReaderDetails:
-                if (cardReaderInfo != null) {
+                if (mCardReaderInfo != null) {
                     item.setEnabled(true);
                     AlertDialog alertDialog2 = new AlertDialog.Builder(getActivity()).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -388,9 +445,9 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
                         }
                     }).setCancelable(true).create();
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("CardReaderType- ").append(cardReaderInfo.getCardReaderType()).append("\n")
-                            .append("BatteryPercentage- ").append(cardReaderInfo.getBatteryPercentage()).append("\n")
-                            .append("SerialNumber- ").append(cardReaderInfo.getSerialNumber());
+                    stringBuilder.append("CardReaderType- ").append(mCardReaderInfo.getCardReaderType()).append("\n")
+                            .append("BatteryPercentage- ").append(mCardReaderInfo.getBatteryPercentage()).append("\n")
+                            .append("SerialNumber- ").append(mCardReaderInfo.getSerialNumber());
                     alertDialog2.setMessage(stringBuilder.toString());
                     alertDialog2.setTitle("Card Reader Details");
                     alertDialog2.show();
@@ -402,25 +459,79 @@ public class TransactionFragment extends Fragment implements CardReaderCallBack,
         return true;
     }
 
-    @Override
-    public void onDeviceDiscovered(final List<CardReaderInfo> list) { /*  don;t use this method. This is for future need */
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1);
-        for (CardReaderInfo cardReaderInfo : list) {
-            arrayAdapter.add(cardReaderInfo.getBluetoothName());
-        }
+//    @Override
+//    public void onDeviceDiscovered(final List<CardReaderInfo> list) { /*  don;t use this method. This is for future need */
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1);
+//        for (CardReaderInfo mCardReaderInfo : list) {
+//            arrayAdapter.add(mCardReaderInfo.getBluetoothName());
+//        }
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setSingleChoiceItems(arrayAdapter, 0, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//
+//            }
+//        });
+//        builder.setCancelable(false);
+//        builder.setNegativeButton("Cancel", null);
+//        builder.setTitle("Please choose reader");
+//        builder.create().show();
+//    }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setSingleChoiceItems(arrayAdapter, 0, new DialogInterface.OnClickListener() {
+    private void showBluetoothReaders() {
+        showSingleSelectChoices("Choose a Bluetooth Reader", new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CardReaderInfo readerInfo = mDetectedBTReadersList.get(position);
+                mCardReaderInfo = readerInfo;
 
+                btMac = readerInfo.getBluetoothIdentifier();
+                btName = readerInfo.getBluetoothName();
+
+                mCloverGo.stopBluetoothReaderScan();
+
+                if (readerInfo.isPaired())
+                    mCloverGo.connectToBluetoothReader(readerInfo);
+                else
+                    mCloverGo.pairReader(readerInfo);
+
+                Toast.makeText(getActivity(), btName + "\n" + btMac, Toast.LENGTH_SHORT).show();
+                mChoiceDialog.dismiss();
+            }
+        }, getActivity());
+    }
+
+    public void showSingleSelectChoices(String title, AdapterView.OnItemClickListener itemClickListener, Context context) {
+        mChoiceDialog = new Dialog(context, R.style.myDialog);
+        mChoiceDialog.setContentView(R.layout.choice_dialog_layout);
+        mChoiceDialog.setCancelable(true);
+        mChoiceDialog.setCanceledOnTouchOutside(false);
+        mChoiceDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mChoiceDialog.dismiss();
             }
         });
-        builder.setCancelable(false);
-        builder.setNegativeButton("Cancel", null);
-        builder.setTitle("Please choose reader");
-        builder.create().show();
+
+        mChoiceDialog.findViewById(R.id.choiceDiaBttn).setVisibility(View.VISIBLE);
+        mChoiceDialog.findViewById(R.id.choiceDiaBttn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mChoiceDialog.dismiss();
+            }
+        });
+
+        ((TextView) mChoiceDialog.findViewById(R.id.choiceDiaTitle)).setText(title);
+
+        mDetectedReadersArrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, android.R.id.text1, mDetectedBTReadersStringsList);
+        mDetectedBTReadersListVw = (ListView) mChoiceDialog.findViewById(R.id.choiceDiaList);
+        mDetectedBTReadersListVw.setAdapter(mDetectedReadersArrayAdapter);
+        mDetectedBTReadersListVw.setOnItemClickListener(itemClickListener);
+        mDetectedReadersArrayAdapter.notifyDataSetChanged();
+
+        mChoiceDialog.show();
     }
 
 }

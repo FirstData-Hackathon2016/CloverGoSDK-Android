@@ -141,7 +141,6 @@ public class ManualTransactionFragment extends Fragment implements TransactionCa
         mManualPayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCloverGo.setTransactionCallBack(ManualTransactionFragment.this);
                 String cardNumber = mCardNumber.getText().toString();
                 if (cardNumber.matches("")) {
                     Toast.makeText(getActivity(), "Please enter a valid card number", Toast.LENGTH_SHORT).show();
@@ -181,7 +180,7 @@ public class ManualTransactionFragment extends Fragment implements TransactionCa
                 progressDialog.setMessage("Loading....");
                 progressDialog.show();
 
-                mCloverGo.doKeyedTransaction(keyedTransactionRequest);
+                mCloverGo.doKeyedTransaction(keyedTransactionRequest, ManualTransactionFragment.this);
             }
         });
         return view;
