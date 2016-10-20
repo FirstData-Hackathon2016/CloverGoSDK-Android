@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
-import com.firstdata.clovergo.client.model.CloverGoConstants;
 import com.firstdata.clovergo.client.util.CloverGo;
 
 import java.util.ArrayList;
@@ -28,13 +27,9 @@ import fragments.SendReceiptFragment;
 
 public class MainActivity extends FragmentActivity {
 
-    private final String API_KEY = "N1sWE4VKuYErF55TUj1WGjOtSgG7lPrx";
-    private final String API_SECRET = "5546ac1e6727a528d8rf46acf94cdeca13rt54fb03b1eeef1e346fcd10e34343";
-    private final CloverGoConstants.ENV ENVIRONMENT = CloverGoConstants.ENV.TEST;
-
-    private final String EMPLOYEE_ID = "D3WBSX1RE88Y2";
-    private final String MERCHANT_ID = "19TZTEEHW4TF4";
-    private final String DEVICE_ID = "46fd97d2-a216-42d2-b035-1e325dd2d8dd";
+    private final String EMPLOYEE_ID = "{Set your Employee ID here}";
+    private final String MERCHANT_ID = "{Set your Merchant ID here}";
+    private final String DEVICE_ID = "{Set your Device ID here}";
 
     private static CloverGo mCloverGo;
 
@@ -47,7 +42,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mCloverGo = new CloverGo(MainActivity.this, API_KEY, API_SECRET, ENVIRONMENT, DEVICE_ID, MERCHANT_ID, EMPLOYEE_ID);
+        mCloverGo = new CloverGo(MainActivity.this, DEVICE_ID, MERCHANT_ID, EMPLOYEE_ID);
 
         if (Build.VERSION.SDK_INT >= 23 && (!checkPermission(Manifest.permission.RECORD_AUDIO) || !checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)))
             requestPermissions();
