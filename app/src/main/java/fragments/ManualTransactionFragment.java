@@ -1,7 +1,6 @@
 package fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,11 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +32,6 @@ import com.firstdata.clovergo.client.util.CloverGo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 import domain.SampleCloverConstants;
 import domain.Validator;
@@ -55,10 +49,6 @@ public class ManualTransactionFragment extends Fragment implements TransactionCa
     private InputMethodManager inputMethodManager;
     private ProgressDialog progressDialog;
 
-    private Dialog mChoiceDialog;
-    private Button mGet450Btn;
-    private String btMac, btName;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -75,24 +65,6 @@ public class ManualTransactionFragment extends Fragment implements TransactionCa
         mCvv = (EditText) view.findViewById(R.id.cvvEditText);
 
         mManualPayBtn = (Button) view.findViewById(R.id.manualPayBtn);
-
-        mGet450Btn = (Button) view.findViewById(R.id.get450ReadersBtn);
-        mGet450Btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<BTReaderDevice> list = new ArrayList<BTReaderDevice>();
-                BTReaderDevice device = new BTReaderDevice();
-                device.macAddress = "123";
-                device.name = "123name";
-                list.add(device);
-                device = new BTReaderDevice();
-                device.macAddress = "456";
-                device.name = "456name";
-                list.add(device);
-
-                showBluetoothReaders(list);
-            }
-        });
 
         getActivity().getActionBar().setTitle("Manual Transaction");
 
@@ -230,63 +202,4 @@ public class ManualTransactionFragment extends Fragment implements TransactionCa
         super.onStop();
         inputMethodManager.hideSoftInputFromWindow(mCvv.getWindowToken(), 0);
     }
-
-    private void showBluetoothReaders(final List<BTReaderDevice> pairedReaders) {
-        List<String> readers = new ArrayList();
-
-        for (BTReaderDevice btReaderDevice : pairedReaders)
-            readers.add(btReaderDevice.name);
-
-        showSingleSelectChoices("Choose a Bluetooth Reader", readers, new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BTReaderDevice device = pairedReaders.get(position);
-
-                btMac = device.macAddress;
-                btName = device.name;
-
-                Toast.makeText(getActivity(), btMac + ":" + btName, Toast.LENGTH_SHORT).show();
-                mChoiceDialog.dismiss();
-            }
-        }, null, getActivity());
-    }
-
-    public class BTReaderDevice {
-        public String name;
-        public String macAddress;
-        public List<UUID> UUIDS;
-    }
-
-    public void showSingleSelectChoices(String title, List<String> choices, AdapterView.OnItemClickListener itemClickListener, View.OnClickListener buttonClickListener, Context context) {
-
-
-        mChoiceDialog = new Dialog(context, R.style.myDialog);
-        mChoiceDialog.setContentView(R.layout.choice_dialog_layout);
-        mChoiceDialog.setCancelable(true);
-        mChoiceDialog.setCanceledOnTouchOutside(false);
-        mChoiceDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mChoiceDialog.dismiss();
-            }
-        });
-
-        mChoiceDialog.findViewById(R.id.choiceDiaBttn).setVisibility(View.VISIBLE);
-        mChoiceDialog.findViewById(R.id.choiceDiaBttn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChoiceDialog.dismiss();
-            }
-        });
-
-        ((TextView) mChoiceDialog.findViewById(R.id.choiceDiaTitle)).setText(title);
-
-        ListView choiceList = (ListView) mChoiceDialog.findViewById(R.id.choiceDiaList);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, android.R.id.text1, choices);
-        choiceList.setAdapter(arrayAdapter);
-        choiceList.setOnItemClickListener(itemClickListener);
-
-        mChoiceDialog.show();
-    }
-
 }
