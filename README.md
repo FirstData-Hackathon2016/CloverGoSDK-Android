@@ -52,15 +52,17 @@ The Fragment that initializes the card reader should implement **_CardReaderCall
 Below are the methods that should be implemented by the Fragment that acts as the **_CardReaderCallBack_**
 
 ```
-void onConnected();
-void onDisconnected();
-void onProgress(CardReaderEvent readerEvent);
-void onError(CardReaderErrorEvent readerErrorEvent);
-void onReady();
-void onReaderResetProgress(CardReaderEvent readerEvent);
-void onReaderCalibrationProgress(int progress);
-void onAidMatch(List<ApplicationIdentifier> applicationIdentifierList,AidSelection aidSelection);
-void onDeviceDiscovered(List<CardReaderInfo> discoveredDevices);
+    void onConnected();
+    void onDisconnected();
+    void onProgress(CardReaderEvent var1);
+    void onError(CardReaderErrorEvent var1);
+    void onReady(CardReaderInfo var1);
+    void onReaderResetProgress(CardReaderEvent var1);
+    void onReaderCalibrationProgress(int var1);
+    void onAidMatch(List<ApplicationIdentifier> var1, CardReaderCallBack.AidSelection var2);
+    void onCardReaderDiscovered(CardReaderInfo var1);
+    void onPairingFailed();
+    void onPairingSuccess();
 ```
 
 ###Initialize the Card Reader
