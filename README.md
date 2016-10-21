@@ -103,14 +103,28 @@ mCloverGo.doReaderTransaction(transactionRequest, MyFragment.this);
 
 Once the transaction is complete, the response **_TransactionResponse_** will be sent to the **_TransactionCallBack_** method **_onSuccess_**
 
+**_TransactionResponse_** returns the following values
+```
+    private String orderId;
+    private String transactionId;
+    private String maskedCardNo;
+    private String cardholderName;
+    private int amountCharged; // includes tax and tip if any
+    private String status;
+    private String mode;
+    private String cvmResult;
+    private String cardType;
+    private String externalPaymentId;
+    private String applicationIdentifier;
+```
 
-###Additional Transactional properties
+If the transaction fails the error response will be sent to **_onFailure_** of **_TransactionCallBack_**
 
-Additional transactional properties can be set on the CloverGo **_TransactionRequest_** instance to 
-- Allow Duplicate Transactions
+**_ErrorResponse_** returns the following response
 
 ```
-setForceDuplicate(true);
+    private String code;
+    private String message;
 ```
 
 ###Get Inventory
